@@ -77,6 +77,12 @@ namespace SubjectQueueTool
                 return false;
             }
 
+            if( FailedSubjectCountTextBox.Text.Length == 0 )
+            {
+                MessageBox.Show("请输入错题数！");
+                return false;
+            }
+
             int failedSubjectCount = Int32.Parse(FailedSubjectCountTextBox.Text);
 
             if( failedSubjectCount < 0 )
