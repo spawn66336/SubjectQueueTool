@@ -37,7 +37,10 @@ namespace SubjectQueueTool
                 info.changeFreq = Int32.Parse(ForgotFreqTextBox.Text);
             }
             info.userInfo = PageNumTextBox.Text;
-
+            if( info.subjectInfos == null )
+            {
+                info.subjectInfos = new List<string>();
+            }
 
             Close();
         }

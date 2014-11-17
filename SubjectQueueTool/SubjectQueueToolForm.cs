@@ -30,12 +30,39 @@ namespace SubjectQueueTool
 
         private void PassBtn_Click(object sender, EventArgs e)
         {
+            if (SubjectQueueToolModel.GetInstance().CurrDispline == null)
+            {
+                MessageBox.Show("请先选择一个科目");
+                return;
+            }
+
+            if( MessageBox.Show("是否确定会做此题？","注意！",MessageBoxButtons.YesNo) == DialogResult.No )
+            {
+                return;
+            }
+
             SubjectQueueToolModel.GetInstance().Pass();
             UpdateUI();
         }
 
         private void FailBtn_Click(object sender, EventArgs e)
         {
+            if (SubjectQueueToolModel.GetInstance().CurrDispline == null)
+            {
+                MessageBox.Show("请先选择一个科目");
+                return;
+            }
+
+            if (MessageBox.Show("是否确定不会做此题？", "注意！", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                return;
+            }
+
+            InputFailedSubjectInfoForm failedSubjectDialog = new InputFailedSubjectInfoForm();
+            failedSubjectDialog.ShowDialog();
+            SubjectQueueToolModel.GetInstance().CurrSubjectType.subjectInfos.Add(failedSubjectDialog.failedSubjectInfo);
+            SubjectQueueToolModel.GetInstance().SaveCurrSubjectType(); 
+
             SubjectQueueToolModel.GetInstance().Fail();
             UpdateUI();
         }
@@ -99,7 +126,8 @@ namespace SubjectQueueTool
                 return;
             }
 
-            DisplineLabel.Text = SubjectQueueToolModel.GetInstance().CurrDispline.Name;
+            DisplineLabel.Text = SubjectQueueToolModel.GetInstance().CurrDispline.Name;  
+            ProgressLabel.Text = "距离此遍完成还有"+SubjectQueueToolModel.GetInstance().CurrDispline.GetUndoneSubjectTypeCount()+"个题型";
 
             //更新主排序列表
             var mainSortList = SubjectQueueToolModel.GetInstance().CurrDispline.GetMainSort();   
@@ -139,6 +167,29 @@ namespace SubjectQueueTool
                 UserInfoTextBox.Text = currSubject.userInfo;
             }
             
+        }
+
+        private void ExportFailedSubjectInfos_Click(object sender, EventArgs e)
+        {
+            if (SubjectQueueToolModel.GetInstance().CurrDispline == null)
+            {
+                MessageBox.Show("请先选择一个科目，再进行导出！");
+                return;
+            }
+
+            SubjectQueueToolModel.GetInstance().CurrDispline.ExportFailedSubjectInfos();
+
+        }
+
+        private void ExportFailedSubjectPageNumsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SubjectQueueToolModel.GetInstance().CurrDispline == null)
+            {
+                MessageBox.Show("请先选择一个科目，再进行导出！");
+                return;
+            }
+
+            SubjectQueueToolModel.GetInstance().CurrDispline.ExportFaileSubjectPageNums();
         }
  
     }

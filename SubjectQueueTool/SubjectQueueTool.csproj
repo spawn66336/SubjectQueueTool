@@ -79,6 +79,12 @@
     <Compile Include="DisplineSubjectsListEditForm.Designer.cs">
       <DependentUpon>DisplineSubjectsListEditForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="InputFailedSubjectInfoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputFailedSubjectInfoForm.Designer.cs">
+      <DependentUpon>InputFailedSubjectInfoForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SubjectInfoEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +105,9 @@
     <Compile Include="SubjectQueueTool\SubjectQueueToolModel.cs" />
     <EmbeddedResource Include="DisplineSubjectsListEditForm.resx">
       <DependentUpon>DisplineSubjectsListEditForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InputFailedSubjectInfoForm.resx">
+      <DependentUpon>InputFailedSubjectInfoForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubjectInfoEditForm.resx">
       <DependentUpon>SubjectInfoEditForm.cs</DependentUpon>

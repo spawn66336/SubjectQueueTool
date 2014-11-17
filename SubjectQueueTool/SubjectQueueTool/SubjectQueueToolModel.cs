@@ -86,6 +86,15 @@ namespace SubjectQueueTool.SubjectQueueTool
             }
         }
 
+        public void SaveCurrSubjectType()
+        {
+            if (!currSubjectType.IsEmpty())
+            {
+                currDispline.Set(currSubjectType.id, currSubjectType); 
+            }
+        }
+
+
         void _GenCurrentSubjectType()
         {
             IPickSubjectStrategy subjectPicker = new DefaultPickStrategy();

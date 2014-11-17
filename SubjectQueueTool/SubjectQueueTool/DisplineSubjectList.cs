@@ -21,6 +21,7 @@ namespace SubjectQueueTool.SubjectQueueTool
         public int passNum;
         public string userInfo;
         public string lastChangeTime;
+        public List<string> subjectInfos;
 
         public bool IsEmpty()
         {
@@ -34,7 +35,8 @@ namespace SubjectQueueTool.SubjectQueueTool
             t.ChangeFreq = changeFreq;
             t.Done = done;
             t.PassNum = passNum;
-            t.UserInfo = userInfo;
+            t.UserInfo = userInfo; 
+            t.SubjectInfos = subjectInfos;
         }
 
         public static SubjectTypeInfo GetInfo(SubjectType t)
@@ -46,8 +48,9 @@ namespace SubjectQueueTool.SubjectQueueTool
             info.passNum = t.PassNum;
             info.failedSubjectNum = t.FailedSubjectNum;
             info.changeFreq = t.ChangeFreq;
-            info.userInfo = t.UserInfo; 
+            info.userInfo = t.UserInfo;
             
+
             if( t.ChangeTimeList.Count == 0 )
             {
                 info.lastChangeTime = "------";
@@ -57,7 +60,11 @@ namespace SubjectQueueTool.SubjectQueueTool
                 info.lastChangeTime = t.ChangeTimeList[t.ChangeTimeList.Count - 1];
             }
 
-
+            info.subjectInfos = new List<string>();
+            foreach( var s in t.SubjectInfos )
+            {
+                info.subjectInfos.Add(s);
+            } 
             return info;
         }
 
@@ -231,8 +238,92 @@ namespace SubjectQueueTool.SubjectQueueTool
             return l;
         }
 
+        public int GetSubjectTypeCount()
+        {
+            return subjectTypeTable.Count;
+        }
 
+        public int GetUndoneSubjectTypeCount()
+        {
+            int doneNum = 0;
+            foreach( var subject in subjectTypeTable )
+            {
+                if( subject.Value.Done )
+                {
+                    doneNum++;
+                }
+            }
 
+            return GetSubjectTypeCount() - doneNum;
+        }
+
+        
+        
+
+        public void ExportFailedSubjectInfos()
+        {
+            string finalString = "错题集"; 
+            foreach( var st in subjectTypeTable )
+            {
+                finalString += st.Value.Name + "\r\n";
+                foreach( var s in st.Value.SubjectInfos )
+                {
+                    finalString += "\t" + s + "\r\n";
+                }
+            }
+            Export(finalString);
+        }
+
+        class SubjectInfoComparer : IComparer<string>
+        {
+            public int Compare(string x, string y)
+            {
+                string xPgNum = x.Substring(x.IndexOf('P')+1, x.IndexOf('-')-1);
+                string yPgNum = y.Substring(y.IndexOf('P')+1, y.IndexOf('-')-1);
+
+                int xPageNum = 0;
+                int yPageNum = 0;
+                int.TryParse(xPgNum,out xPageNum);
+                int.TryParse(yPgNum,out yPageNum);
+
+                return xPageNum - yPageNum;
+            }
+        }
+
+        public void ExportFaileSubjectPageNums()
+        {
+            string finalString = "错题集"+"\r\n";
+
+            List<string> subInfos = new List<string>(); 
+            foreach (var st in subjectTypeTable)
+            {
+                foreach (var s in st.Value.SubjectInfos)
+                {
+                    subInfos.Add(s); 
+                }
+            } 
+            subInfos.Sort(new SubjectInfoComparer());
+
+            foreach( var s in subInfos )
+            {
+                finalString += "\t" + s + "\r\n";
+            }
+            Export(finalString);
+        }
+
+        private void Export( string str )
+        {
+            if (!Directory.Exists("./Export"))
+            {
+                Directory.CreateDirectory("./Export");
+            }
+
+            string fileName = DateTime.Now.ToString("yyyy年MMM月d日HH时mm分ss秒___") + name + "错题集.txt";
+
+            StreamWriter wr = File.CreateText("./Export/" + fileName);
+            wr.Write(str);
+            wr.Close();
+        }
 
         private List<SubjectType> _GetMainSort()
         {
@@ -287,8 +378,7 @@ namespace SubjectQueueTool.SubjectQueueTool
             yamlSerializer.Serialize(yamlWriter, _GetSerializeObject());
             yamlWriter.Close();
         }
-
-
+        
         private DisplineSubjectListSerializeObject _GetSerializeObject()
         {
             var obj = new DisplineSubjectListSerializeObject();

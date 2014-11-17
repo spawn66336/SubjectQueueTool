@@ -93,6 +93,18 @@ namespace SubjectQueueTool.SubjectQueueTool
             }
         }
 
+        public List<string> SubjectInfos
+        {
+            get
+            {
+                return subjectInfos;
+            }
+            set
+            {
+                subjectInfos = value;
+            }
+        }
+
         public Guid GetGUID() { return id; }
         public void SetGUID(Guid guid) { id = guid; }
 
@@ -119,5 +131,7 @@ namespace SubjectQueueTool.SubjectQueueTool
         private string userInfo;
         //变更优先级时间点
         private List<DateTime> changeTimeList = new List<DateTime>();
+        //错题信息
+        private List<string> subjectInfos = new List<string>();
     }
 }
